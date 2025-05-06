@@ -18,6 +18,21 @@ User can exchange USDC to IICO using `buy(xtokens, receiver)` function:
 ## IcoManager contract
 Link on etherscan.io https://etherscan.io/address/0xdd876c52af74443d587c226d324aab26de2dc628
 Most useful functions:
- * 
+ * `getAlias(address)` returns alias for the address (if alias was set). Alias is represented as bytes32, every byte is ASCII symbol.
+ * `getIconhash(skinId, address)` returns dag hash (SHA-256) for CIDv0 (see IPFS protocol) represented as bytes32. So far we have only one skin, use 0 as skinId. You can encode dag hash as CIDv0 and request icon from IPFS by yourself.
+
+## Safety
+ * We use only SVG icons. Although user is able to upload custom icon, it becomes public after the validation. Validator manually opens icon and makes sure it is correct SVG icon. After the validation any user can use uploaded icon.
+ * Uploader takes responsibility for copyright violation.
+ * Although user can set alias its value is strictly limited on the smart-contract lavel. Max length is 30 symbols, only A-Z, a-z, 0-9 and underline symbols are allowed. So you can not worry about any injections and display raw value.
 
 ## Backend API
+Backend provides API to simplify integration for free, but free plan has limited bandwidth. 
+ * GET https://mywalleticon.com/usericon/PUT_WALLET_ADDRESS_HERE reads smart-contract, reads IPFS file and returns image at once. So you can easily integrate it into your system.
+ * GET https://mywalleticon.com/useralias/PUT_WALLET_ADDRESS_HERE reads smart-contract and returns JSON response with alias. Response structure:
+```
+{"code":"OK","details":null,"payload":"alias_is_here"}
+```
+ * GET https://mywalleticon.com/iconcid/PUT_CIDv0_HERE returns icon by CIDv0. NOTE: It works for registered CIDs only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
+ * GET https://mywalleticon.com/iconhash/PUT_DAG_HASH_HERE returns icon by dag hash represented as hex string. NOTE: It works for registered dag hashes only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
+ 
