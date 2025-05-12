@@ -35,4 +35,15 @@ Backend provides API to simplify integration for free, but free plan has limited
 ```
  * GET https://mywalleticon.com/iconcid/PUT_CIDv0_HERE returns icon by CIDv0. NOTE: It works for registered CIDs only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
  * GET https://mywalleticon.com/iconhash/PUT_DAG_HASH_HERE returns icon by dag hash represented as hex string. NOTE: It works for registered dag hashes only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
- 
+
+## Decentralized integration
+If you want to integrate it in decentralized way, here is the HowTo get wallet icon:
+ * Request `iconhash` for the wallet from the smart-contract: `getIconhash(skinId, address)`. Use `0` as `skinId`. Smart-contract is deployed on `Eth` network, smart-contract address: `0xdd876c52af74443d587c226d324aab26de2dc628`. You can find ABI on etherscan: https://etherscan.io/address/0xdd876c52af74443d587c226d324aab26de2dc628#code
+ * Encode `iconhash` into the `CidV0`. Prepend `iconhash` value with bytes `0x1220`. Encode these `34 bytes` as `Base58` string
+ * Download SVG icon through the IPFS using `CidV0`
+
+Example, 
+ * Smart-contract returned to you the `iconhash: 0xa7e76719279416374a9122074751a2e2593a7305d8c85beb1f919c8cd33952cc`
+ * Prepended hex-string: `0x1220a7e76719279416374a9122074751a2e2593a7305d8c85beb1f919c8cd33952cc`
+ * Base58 string: `QmZe5Sz3j7qT4eGr6Fr9KJJqN89vFvna2JPn41ht1L96Dq`
+ * Get icon through IPFS. [Example](https://gateway.pinata.cloud/ipfs/QmZe5Sz3j7qT4eGr6Fr9KJJqN89vFvna2JPn41ht1L96Dq)
