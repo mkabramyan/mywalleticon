@@ -35,6 +35,8 @@ Backend provides API to simplify integration for free, but free plan has limited
 ```
  * GET https://mywalleticon.com/iconcid/PUT_CIDv0_HERE returns icon by CIDv0. NOTE: It works for registered CIDs only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
  * GET https://mywalleticon.com/iconhash/PUT_DAG_HASH_HERE returns icon by dag hash represented as hex string. NOTE: It works for registered dag hashes only (dag hash must be registered and validated in the IcoManager contract). It can help you to simplify integration if you want to read icon hashes from the smart-contract directly
+ 
+For more details check this file: lightweight.html
 
 ## Decentralized integration
 If you want to integrate it in decentralized way, here is the HowTo get wallet icon:
@@ -47,3 +49,5 @@ Example,
  * Prepended hex-string: `0x1220a7e76719279416374a9122074751a2e2593a7305d8c85beb1f919c8cd33952cc`
  * Base58 string: `QmZe5Sz3j7qT4eGr6Fr9KJJqN89vFvna2JPn41ht1L96Dq`
  * Get icon through IPFS. [Example](https://gateway.pinata.cloud/ipfs/QmZe5Sz3j7qT4eGr6Fr9KJJqN89vFvna2JPn41ht1L96Dq)
+ 
+For more details check this file: decentralized.html
