@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>MyWalletIcon lightweight integration demo</title>
+  </head>
+  <body>
+  
+	<script>
+
+		function removeAddress(addr) {
+			$("#" + addr).remove();
+		}
+		
+		function addAddressFromInput() {
+			addAddress($("#addressInput").val());
+		}
+		
+		function addAddress(addr) {
+		
+			if (!addr.match(/^(0x){0,1}[A-Fa-f0-9]{1,40}$/)) {
+				alert("Please use Eth address");
+				return;
+			}
+			
+			$("#wallets").prepend(
+				"<div class='card container' id='" + addr + "' style='margin-top:15px'>" + 
+				"	<div class='row'>"+
+				"		<div class='col-3 d-flex align-items-center'><img src='https://mywalleticon.com/usericon/" + addr + "' class='img-fluid'></div>" + //<<<== Here is the icon retrieve 
+				"		<div class='card-body col-9'>" + 
+				"			<h5 class='card-title'>" + addr + "</h5>" + 
+				"			<p class='card-text'>The backend has read smart-contract, fetched icon through the IPFS and returned it with single request</p>" + 
+				"			<a href='#' class='btn btn-primary' onClick='removeAddress(\"" + addr + "\")'>Remove</a>" + 
+				"		</div>" + 
+				"	</div>" + 
+				"</div>"
+			);
+		
+		}
+		
+		document.addEventListener("DOMContentLoaded", function(event) {
+			addAddress("0xd073a50189911279F7f6Eec87A55C486413e5904");
+			addAddress("0xBCF4557177f039c2b7905F297d0D4C32026045e2");
+			addAddress("0x03137c47493ED9531884bdE87b2FcA099CE3936D");
+		});
+			
+	</script>
+	
+	<div class="container" id="content">
+
+	<div class='card' style='margin-top:35px'>
+		<div class='card-body'>
+			<form>
+				<div class="mb-3">
+					<label for="addressInput" class="form-label">Wallet address</label>
+					<input type="text" class="form-control" id="addressInput" aria-describedby="addressHelp">
+					<div id="addressHelp" class="form-text">Put address here to see its icon</div>
+				</div>
+				<button type="button" class="btn btn-primary" onClick="addAddressFromInput()">Add</button>
+			</form>
+		</div>
+	</div>
+	
+	<div id='wallets'>
+	</div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/popper.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+  </body>
+</html>

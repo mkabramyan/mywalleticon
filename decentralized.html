@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>MyWalletIcon lightweight integration demo</title>
+  </head>
+  <body>
+  
+	<script>
+
+		const ETH_MAINNET_RPC = "https://eth.drpc.org"; //Whis is freeware RPC provider, you might need to use a reliable, paid RPC service for consistent and stable access.
+		const IPFS_GATEWAY = "https://mywalleticon.com/iconcid/"; //I've set MyWalletIcon here. You can either swap it out for a third-party IPFS gateway or continue using MyWalletIcon (NOTE: free plan has limited bandwidth)
+	
+		const ICO_MANAGER_ADDRESS = "0xdd876c52af74443d587c226d324aab26de2dc628";
+        const MIN_ABI = [
+            {
+                "constant": true,
+                "inputs": [{ "internalType": "uint32", "name": "skinId", "type": "uint32" }, { "internalType": "address", "name": "addr", "type": "address" }],
+                "name": "getIconhash",
+                "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+                "type": "function"
+            }
+        ];
+
+		function removeAddress(addr) {
+			$("#" + addr).remove();
+		}
+		
+		function addAddressFromInput() {
+			addAddress($("#addressInput").val());
+		}
+		
+		//hex to base58 encode function
+		function encode_b58(r){let t=[1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];var e,n=BigInt("0x"+r);let o=BigInt(58);for(var a="";n>0;)a=t[e=n%o]+a,n/=BigInt(58);for(;r.match(/^00/);)a="1"+a,r=r.substring(2);return a}
+		
+		function hashToCid(hash) {
+		
+			var dag = '1220' + hash;
+			if (hash.startsWith('0x')) {
+				dag = '1220' + hash.substring(2);
+			}
+			
+			return encode_b58(dag);
+		
+		}
+		
+		async function addAddress(addr) {
+		
+			if (!addr.match(/^(0x){1}[A-Fa-f0-9]{40,40}$/)) {
+				alert("Please use Eth address: e.g. 0x01...ab");
+				return;
+			}
+			
+			//prepare web3
+			const web3 = new Web3(new Web3.providers.HttpProvider(ETH_MAINNET_RPC));
+            const imContract = new web3.eth.Contract(MIN_ABI, ICO_MANAGER_ADDRESS);
+			
+			//read smart-contract
+			const iconHash = await imContract.methods.getIconhash(0n, addr).call();
+			const iconCid = hashToCid(iconHash);
+			
+			$("#wallets").prepend(
+				"<div class='card container' id='" + addr + "' style='margin-top:15px'>" + 
+				"	<div class='row'>"+
+				"		<div class='col-3 d-flex align-items-center'><img src='https://mywalleticon.com/iconcid/" + iconCid + "' class='img-fluid'></div>" + //<<<== Here is the icon retrieve 
+				"		<div class='card-body col-9'>" + 
+				"			<h5 class='card-title'>" + addr + "</h5>" + 
+				"			<p class='card-text'>The backend has read smart-contract, fetched icon through the IPFS and returned it with single request</p>" + 
+				"			<a href='#' class='btn btn-primary' onClick='removeAddress(\"" + addr + "\")'>Remove</a>" + 
+				"		</div>" + 
+				"	</div>" + 
+				"</div>"
+			);
+		
+		}
+		
+		document.addEventListener("DOMContentLoaded", function(event) {
+			addAddress("0xd073a50189911279F7f6Eec87A55C486413e5904");
+			addAddress("0xBCF4557177f039c2b7905F297d0D4C32026045e2");
+			addAddress("0x03137c47493ED9531884bdE87b2FcA099CE3936D");
+		});
+			
+	</script>
+	
+	<div class="container" id="content">
+
+	<div class='card' style='margin-top:35px'>
+		<div class='card-body'>
+			<form>
+				<div class="mb-3">
+					<label for="addressInput" class="form-label">Wallet address</label>
+					<input type="text" class="form-control" id="addressInput" aria-describedby="addressHelp">
+					<div id="addressHelp" class="form-text">Put address here to see its icon</div>
+				</div>
+				<button type="button" class="btn btn-primary" onClick="addAddressFromInput()">Add</button>
+			</form>
+		</div>
+	</div>
+	
+	<div id='wallets'>
+	</div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/popper.min.js"></script>
+    <script src="/bootstrap.min.js"></script>
+	<script src="/web3.min.js"></script>
+  </body>
+</html>
